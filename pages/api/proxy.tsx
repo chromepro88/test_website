@@ -1,17 +1,17 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import fetch from 'node-fetch';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  
+
   try {
     const formData = new URLSearchParams();
     for (const [key, value] of Object.entries(req.body)) {
-      formData.append(key, String(value));
+      formData.append(key, value as string);
     }
-    
+
     const response = await fetch('https://goal-set.com/clients/webhook', {
       method: 'POST',
       body: formData,
@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         'Accept': 'application/json',
       },
     });
-    
+
     const data = await response.json();
     res.status(response.status).json(data);
   } catch (error) {

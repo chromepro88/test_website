@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
 
@@ -67,10 +67,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Modify submit button to include loader
     const submitButton = form.querySelector('#submit-contact');
-    if (submitButton) {
+    if (submitButton instanceof HTMLElement) {
       submitButton.style.cssText = 'background-color:#4e4feb;color:#ffffff;padding:10px 20px;border:none;border-radius:4px;cursor:pointer;';
       submitButton.innerHTML = `
-          <span id="contact-loader" style="display:none;border:2px solid #ffffff;border-top:2px solid transparent;border-radius:50%;width:16px;height:16px;animation:spin 1s linear infinite;margin-right:8px;"></span> Submit
+        <span id="contact-loader" style="display:none;border:2px solid #ffffff;border-top:2px solid transparent;border-radius:50%;width:16px;height:16px;animation:spin 1s linear infinite;margin-right:8px;"></span> Submit
       `;
     }
 
@@ -118,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               formData.forEach((value, key) => { formDataJson[key] = value; });
 
               const endpoints = [
-                  { url: '/Microsite/UserMessage', body: formData, isFormData: true },
+                  { url: 'https://bryanttan.showflat.com.sg/Microsite/UserMessage', body: formData, isFormData: true },
                   { url: '/api/proxy', body: JSON.stringify(formDataJson), isFormData: false }
               ];
 
@@ -167,17 +167,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Ensure links point to original website
     const links = document.querySelectorAll('a[href]');
-    links.forEach(link => {
+    links.forEach((link: HTMLAnchorElement) => {
       const href = link.getAttribute('href');
       if (href && !href.startsWith('http') && !href.startsWith('#')) {
         link.setAttribute('href', 'https://bryanttan.showflat.com.sg' + (href.startsWith('/') ? href : '/' + href));
       }
     });
 
+    // Add footer link to original website
+    const footer = document.createElement('div');
+    footer.style.textAlign = 'center';
+    footer.style.marginTop = '20px';
+    footer.innerHTML = '<p>Powered by <a href="https://bryanttan.showflat.com.sg">Bryant Tan</a></p>';
+    document.body.appendChild(footer);
+
     // Serve modified HTML
     res.setHeader('Content-Type', 'text/html');
     res.send(dom.serialize());
   } catch (error) {
-    res.status(500).send('Error processing original website: ' + error.message);
+    res.status(500).send('Error processing original website: ' + (error as Error).message);
   }
 }
