@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     instanceIdInput.value = '680B8789BD449';
     form.appendChild(instanceIdInput);
 
-    // Inject CSS
+    // Inject CSS (unchanged, included for completeness)
     const style = document.createElement('style');
     style.textContent = `
       .contact-form-container { max-width: 500px; margin: 20px auto; padding: 20px; }
@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     `;
     document.head.appendChild(style);
 
-    // Inject toast HTML
+    // Inject toast HTML (unchanged)
     const toastDiv = document.createElement('div');
     toastDiv.style.position = 'fixed';
     toastDiv.style.bottom = '10px';
@@ -65,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     `;
     document.body.appendChild(toastDiv);
 
-    // Modify submit button to include loader
+    // Modify submit button (unchanged)
     const submitButton = form.querySelector('#submit-contact');
     if (submitButton instanceof HTMLElement) {
       submitButton.style.cssText = 'background-color:#4e4feb;color:#ffffff;padding:10px 20px;border:none;border-radius:4px;cursor:pointer;';
@@ -74,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       `;
     }
 
-    // Inject JavaScript
+    // Inject JavaScript (unchanged)
     const script = document.createElement('script');
     script.textContent = `
       function showToast(message, isError) {
@@ -165,16 +165,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     `;
     document.body.appendChild(script);
 
-    // Ensure links point to original website
+    // Ensure links point to original website (FIXED SECTION)
     const links = document.querySelectorAll('a[href]');
-    links.forEach((link: HTMLAnchorElement) => {
-      const href = link.getAttribute('href');
-      if (href && !href.startsWith('http') && !href.startsWith('#')) {
-        link.setAttribute('href', 'https://bryanttan.showflat.com.sg' + (href.startsWith('/') ? href : '/' + href));
+    links.forEach((link) => {
+      if (link instanceof HTMLAnchorElement) {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#')) {
+          link.setAttribute('href', 'https://bryanttan.showflat.com.sg' + (href.startsWith('/') ? href : '/' + href));
+        }
       }
     });
 
-    // Add footer link to original website
+    // Add footer link
     const footer = document.createElement('div');
     footer.style.textAlign = 'center';
     footer.style.marginTop = '20px';
